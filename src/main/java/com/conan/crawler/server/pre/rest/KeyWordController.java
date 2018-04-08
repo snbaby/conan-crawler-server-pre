@@ -61,17 +61,17 @@ public class KeyWordController {
 	@RequestMapping(value = "scan-start", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<ResponseResult> postKeyWordScanStart() throws Exception {
-		List<KeyWordTb> keyWordTbList = keyWordTbMapper.selectByStatus("0");
+		List<KeyWordTb> keyWordTbList = keyWordTbMapper.selectAll();
 		for (KeyWordTb keyWordTb : keyWordTbList) {
 			for (int index = 0; index < queryPageNumber; index++) {
-				ListenableFuture future = kafkaTemplate.send("key-word-scan", Utils.getKeyWordUrl(keyWordTb.getKeyWord(), index*44));
-				future.addCallback(o -> System.out.println("key-word-scan-消息发送成功：" + keyWordTb.getKeyWord()),
-						throwable -> System.out.println("key-word-scan消息发送失败：" + keyWordTb.getKeyWord()));
+				System.out.println("start---key-word-scan---"+keyWordTb.getKeyWord()+"---"+Utils.getKeyWordUrl(keyWordTb.getKeyWord(), index*44));
+				ListenableFuture future = kafkaTemplate.send("key-word-scan", keyWordTb.getKeyWord(),Utils.getKeyWordUrl(keyWordTb.getKeyWord(), index*44));
+				System.out.println("end---key-word-scan---"+keyWordTb.getKeyWord()+"---"+Utils.getKeyWordUrl(keyWordTb.getKeyWord(), index*44));
 			}
 		}
 
 		return new ResponseEntity<ResponseResult>(
-				new ResponseResult(HttpStatus.CREATED.toString(), keyWordTbMapper.selectByStatus("0")),
+				new ResponseResult(HttpStatus.CREATED.toString(), keyWordTbMapper.selectAll()),
 				HttpStatus.CREATED);
 	}
 

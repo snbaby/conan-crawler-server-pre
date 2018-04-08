@@ -27,7 +27,7 @@ public class GoodsController {
 	@Autowired
 	private GoodsTbMapper goodsTbMapper;
 
-	@RequestMapping(value = "scan-start", method = RequestMethod.POST)
+	/*@RequestMapping(value = "scan-start", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<ResponseResult> postGoodsScanStart() throws Exception {
 		List<GoodsTb> goodsTbList = goodsTbMapper.selectByStatus("0");
@@ -40,5 +40,5 @@ public class GoodsController {
 		return new ResponseEntity<ResponseResult>(
 				new ResponseResult(HttpStatus.CREATED.toString(), goodsTbList),
 				HttpStatus.CREATED);
-	}
+	}*/
 }
