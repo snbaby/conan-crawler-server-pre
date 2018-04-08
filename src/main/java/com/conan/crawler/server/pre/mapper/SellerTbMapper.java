@@ -1,5 +1,7 @@
 package com.conan.crawler.server.pre.mapper;
 
+import java.util.List;
+
 import com.conan.crawler.server.pre.entity.SellerTb;
 
 public interface SellerTbMapper {
@@ -50,4 +52,6 @@ public interface SellerTbMapper {
      * @mbg.generated Sun Apr 08 13:26:48 CST 2018
      */
     int updateByPrimaryKey(SellerTb record);
+    
+    List<SellerTb> selectAll();
 }
