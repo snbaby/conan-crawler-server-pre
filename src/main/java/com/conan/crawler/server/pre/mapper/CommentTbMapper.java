@@ -43,4 +43,5 @@ public interface CommentTbMapper {
 	int updateByPrimaryKey(CommentTb record);
 	
 	List<CommentTb> selectAll();
+	List<CommentTb> selectByStatus(String status);
 }

@@ -1,11 +1,14 @@
 package com.conan.crawler.server.pre.rest;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,12 +31,20 @@ public class ShopController {
 
 	@RequestMapping(value = "scan-start", method = RequestMethod.POST)
 	@ResponseBody
+	@Scheduled(fixedDelay = 60000, initialDelay=8000)
 	public ResponseEntity<ResponseResult> postRateScanStart() throws Exception {
-		List<SellerTb> sellerTbList = sellerTbMapper.selectAll();
+		List<SellerTb> sellerTbList = new ArrayList<>();
+		sellerTbList = sellerTbMapper.selectByStatus("0");
+		if(sellerTbList == null || sellerTbList.isEmpty()) {
+			sellerTbList = sellerTbMapper.selectAll();
+		}
 		for (SellerTb sellerTb : sellerTbList) {
 			System.out.println("start---rate-scan---"+sellerTb.getUserNumberId()+"---"+Utils.getShopUrl(sellerTb.getUserNumberId()));
 			ListenableFuture future = kafkaTemplate.send("rate-scan", sellerTb.getUserNumberId(),Utils.getShopUrl(sellerTb.getUserNumberId()));
 			System.out.println("end---rate-scan---"+sellerTb.getUserNumberId()+"---"+Utils.getShopUrl(sellerTb.getUserNumberId()));
+			sellerTb.setStatus("1");
+			sellerTbMapper.updateByPrimaryKeySelective(sellerTb);
+			Thread.sleep(40000);
 		}
 
 		return new ResponseEntity<ResponseResult>(

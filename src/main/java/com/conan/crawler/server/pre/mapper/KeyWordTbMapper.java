@@ -54,4 +54,5 @@ public interface KeyWordTbMapper {
     int updateByPrimaryKey(KeyWordTb record);
     
     List<KeyWordTb> selectAll();
+    List<KeyWordTb> selectByStatus(String status);
 }

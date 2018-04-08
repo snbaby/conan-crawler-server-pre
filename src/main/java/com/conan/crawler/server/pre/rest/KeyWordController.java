@@ -2,6 +2,7 @@ package com.conan.crawler.server.pre.rest;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -60,18 +62,26 @@ public class KeyWordController {
 
 	@RequestMapping(value = "scan-start", method = RequestMethod.POST)
 	@ResponseBody
+	@Scheduled(fixedDelay = 60000, initialDelay=8000)
 	public ResponseEntity<ResponseResult> postKeyWordScanStart() throws Exception {
-		List<KeyWordTb> keyWordTbList = keyWordTbMapper.selectAll();
+		List<KeyWordTb> keyWordTbList = new ArrayList<>();
+		keyWordTbList = keyWordTbMapper.selectByStatus("0");
+		if(keyWordTbList==null||keyWordTbList.isEmpty()) {
+			keyWordTbList = keyWordTbMapper.selectAll();
+		}
 		for (KeyWordTb keyWordTb : keyWordTbList) {
 			for (int index = 0; index < queryPageNumber; index++) {
 				System.out.println("start---key-word-scan---"+keyWordTb.getKeyWord()+"---"+Utils.getKeyWordUrl(keyWordTb.getKeyWord(), index*44));
 				ListenableFuture future = kafkaTemplate.send("key-word-scan", keyWordTb.getKeyWord(),Utils.getKeyWordUrl(keyWordTb.getKeyWord(), index*44));
 				System.out.println("end---key-word-scan---"+keyWordTb.getKeyWord()+"---"+Utils.getKeyWordUrl(keyWordTb.getKeyWord(), index*44));
+				Thread.sleep(20000);
 			}
+			keyWordTb.setStatus("1");
+			keyWordTbMapper.updateByPrimaryKey(keyWordTb);
 		}
 
 		return new ResponseEntity<ResponseResult>(
-				new ResponseResult(HttpStatus.CREATED.toString(), keyWordTbMapper.selectAll()),
+				new ResponseResult(HttpStatus.CREATED.toString(), keyWordTbList),
 				HttpStatus.CREATED);
 	}
 

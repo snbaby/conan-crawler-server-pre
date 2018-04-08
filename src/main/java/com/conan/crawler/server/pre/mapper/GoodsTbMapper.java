@@ -55,5 +55,7 @@ public interface GoodsTbMapper {
     
     List<GoodsTb> selectAll();
     
+    List<GoodsTb> selectByStatus(String status);
+    
     GoodsTb selectByItemId(String itemId);
 }

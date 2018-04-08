@@ -54,4 +54,5 @@ public interface SellerTbMapper {
     int updateByPrimaryKey(SellerTb record);
     
     List<SellerTb> selectAll();
+    List<SellerTb> selectByStatus(String status);
 }
