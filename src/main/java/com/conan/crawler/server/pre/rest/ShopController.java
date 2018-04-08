@@ -31,7 +31,7 @@ public class ShopController {
 
 	@RequestMapping(value = "scan-start", method = RequestMethod.POST)
 	@ResponseBody
-	@Scheduled(fixedDelay = 60000, initialDelay=8000)
+	@Scheduled(fixedDelay = 60000, initialDelay=60000)
 	public ResponseEntity<ResponseResult> postRateScanStart() throws Exception {
 		List<SellerTb> sellerTbList = new ArrayList<>();
 		sellerTbList = sellerTbMapper.selectByStatus("0");

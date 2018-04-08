@@ -62,7 +62,7 @@ public class KeyWordController {
 
 	@RequestMapping(value = "scan-start", method = RequestMethod.POST)
 	@ResponseBody
-	@Scheduled(fixedDelay = 60000, initialDelay=8000)
+	@Scheduled(fixedDelay = 60000, initialDelay=60000)
 	public ResponseEntity<ResponseResult> postKeyWordScanStart() throws Exception {
 		List<KeyWordTb> keyWordTbList = new ArrayList<>();
 		keyWordTbList = keyWordTbMapper.selectByStatus("0");
