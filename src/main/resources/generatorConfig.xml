@@ -21,7 +21,7 @@
 		<javaClientGenerator targetPackage="com.conan.crawler.server.pre.mapper"
 			targetProject="conan-crawler-server-pre/src/main/java" type="XMLMAPPER">
 		</javaClientGenerator>
-		<table schema="conan_crawler" tableName="key_word_tb"
+		<!-- <table schema="conan_crawler" tableName="key_word_tb"
 			domainObjectName="KeyWordTb" enableCountByExample="false"
 			enableUpdateByExample="false" enableDeleteByExample="false"
 			enableSelectByExample="false" selectByExampleQueryId="false">
@@ -45,7 +45,7 @@
 			domainObjectName="ShopScanTb" enableCountByExample="false"
 			enableUpdateByExample="false" enableDeleteByExample="false"
 			enableSelectByExample="false" selectByExampleQueryId="false">
-		</table>
+		</table> -->
 		<table schema="conan_crawler" tableName="comment_tb"
 			domainObjectName="CommentTb" enableCountByExample="false"
 			enableUpdateByExample="false" enableDeleteByExample="false"

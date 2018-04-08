@@ -20,4 +20,13 @@ public class Utils {
 	public static String getShopUrl(String shopId) {
 		return "https://store.taobao.com/shop/view_shop.htm?user_number_id="+shopId;
 	}
+	
+	public static String getCommentTotalUrl(String itemId,String shopType) {
+		if(shopType.equals("0")) {//天猫
+			return "https://dsr-rate.tmall.com/list_dsr_info.htm?itemId="+itemId+"&callback=jsonp145";
+		}else {
+			return "https://rate.taobao.com/detailCount.do?itemId="+itemId+"&callback=jsonp145";	
+		}
+		
+	}
 }

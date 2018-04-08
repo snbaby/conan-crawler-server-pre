@@ -31,7 +31,6 @@ public class ShopController {
 	public ResponseEntity<ResponseResult> postRateScanStart() throws Exception {
 		List<SellerTb> sellerTbList = sellerTbMapper.selectAll();
 		for (SellerTb sellerTb : sellerTbList) {
-			
 			System.out.println("start---rate-scan---"+sellerTb.getUserNumberId()+"---"+Utils.getShopUrl(sellerTb.getUserNumberId()));
 			ListenableFuture future = kafkaTemplate.send("rate-scan", sellerTb.getUserNumberId(),Utils.getShopUrl(sellerTb.getUserNumberId()));
 			System.out.println("end---rate-scan---"+sellerTb.getUserNumberId()+"---"+Utils.getShopUrl(sellerTb.getUserNumberId()));
