@@ -54,4 +54,6 @@ public interface GoodsTbMapper {
     int updateByPrimaryKey(GoodsTb record);
     
     List<GoodsTb> selectAll();
+    
+    GoodsTb selectByItemId(String itemId);
 }

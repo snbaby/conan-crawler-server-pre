@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.conan.crawler.server.pre.entity.CommentTb;
 import com.conan.crawler.server.pre.entity.GoodsTb;
 import com.conan.crawler.server.pre.entity.ResponseResult;
 import com.conan.crawler.server.pre.mapper.CommentTbMapper;
@@ -45,22 +46,43 @@ public class CommentController {
 		return new ResponseEntity<ResponseResult>(new ResponseResult(HttpStatus.CREATED.toString(), goodsTbList),
 				HttpStatus.CREATED);
 	}
-	
+
 	@RequestMapping(value = "scan-detail-start", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<ResponseResult> postCommentScanDetailStart() throws Exception {
-		List<GoodsTb> commentTbList = commentTbMapper.selectAll();
-		for (GoodsTb goodsTb : goodsTbList) {
-			System.out.println("start---comment-total-scan---" + goodsTb.getItemId() + "---"
-					+ Utils.getCommentTotalUrl(goodsTb.getItemId(), goodsTb.getShopType()));
-			ListenableFuture future = kafkaTemplate.send("comment-total-scan", goodsTb.getItemId(),
-					Utils.getCommentTotalUrl(goodsTb.getItemId(), goodsTb.getShopType()));
-			System.out.println("end---comment-total-scan---" + goodsTb.getItemId() + "---"
-					+ Utils.getCommentTotalUrl(goodsTb.getItemId(), goodsTb.getShopType()));
-			Thread.sleep(20000);
+		List<CommentTb> commentTbList = commentTbMapper.selectAll();
+		for (CommentTb commentTb : commentTbList) {
+			String itemId = commentTb.getItemId();
+			if(itemId.equals("565086184399")) {
+				int total = Integer.parseInt(commentTb.getTotal());
+				GoodsTb goodsTb = goodsTbMapper.selectByItemId(itemId);
+				String userNumberId = goodsTb.getUserNumberId();
+				String shopType = goodsTb.getShopType();
+				int maxPage = 0;
+				if (total % 20 == 0) {
+					maxPage = total / 20;
+				} else {
+					maxPage = total / 20 + 1;
+				}
+
+				for (int pageNo = 1; pageNo <= maxPage; pageNo++) {
+					System.out.println("start---comment-detail-scan---" + itemId + "---"
+							+ Utils.getCommentDetailUrl(itemId, userNumberId, pageNo, shopType));
+					ListenableFuture future = kafkaTemplate.send("comment-detail-scan", commentTb.getItemId(),
+							Utils.getCommentDetailUrl(itemId, userNumberId, pageNo, shopType));
+					System.out.println("end---comment-detail-scan---" + itemId + "---"
+							+ Utils.getCommentDetailUrl(itemId, userNumberId, pageNo, shopType));
+					Thread.sleep(20000);
+				}
+			}
 		}
 
-		return new ResponseEntity<ResponseResult>(new ResponseResult(HttpStatus.CREATED.toString(), goodsTbList),
+		return new ResponseEntity<ResponseResult>(new ResponseResult(HttpStatus.CREATED.toString(), commentTbList),
 				HttpStatus.CREATED);
+	}
+
+	public static void main(String[] args) {
+		int total = 5;
+		System.out.println(total / 20);
 	}
 }
