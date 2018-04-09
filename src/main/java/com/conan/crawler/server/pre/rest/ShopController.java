@@ -32,19 +32,16 @@ public class ShopController {
 	@RequestMapping(value = "scan-start", method = RequestMethod.POST)
 	@ResponseBody
 	@Scheduled(fixedDelay = 60000, initialDelay=60000)
-	public ResponseEntity<ResponseResult> postRateScanStart() throws Exception {
+	public ResponseEntity<ResponseResult> postShopScanStart() throws Exception {
 		List<SellerTb> sellerTbList = new ArrayList<>();
 		sellerTbList = sellerTbMapper.selectByStatus("0");
-		if(sellerTbList == null || sellerTbList.isEmpty()) {
-			sellerTbList = sellerTbMapper.selectAll();
-		}
 		for (SellerTb sellerTb : sellerTbList) {
-			System.out.println("start---rate-scan---"+sellerTb.getUserNumberId()+"---"+Utils.getShopUrl(sellerTb.getUserNumberId()));
-			ListenableFuture future = kafkaTemplate.send("rate-scan", sellerTb.getUserNumberId(),Utils.getShopUrl(sellerTb.getUserNumberId()));
-			System.out.println("end---rate-scan---"+sellerTb.getUserNumberId()+"---"+Utils.getShopUrl(sellerTb.getUserNumberId()));
-			sellerTb.setStatus("1");
-			sellerTbMapper.updateByPrimaryKeySelective(sellerTb);
-			Thread.sleep(40000);
+				System.out.println("start---shop-scan---"+sellerTb.getUserNumberId()+"---"+Utils.getShopUrl(sellerTb.getUserNumberId()));
+				ListenableFuture future = kafkaTemplate.send("shop-scan", sellerTb.getUserNumberId(),Utils.getShopUrl(sellerTb.getUserNumberId()));
+				System.out.println("end---shop-scan---"+sellerTb.getUserNumberId()+"---"+Utils.getShopUrl(sellerTb.getUserNumberId()));
+				sellerTb.setStatus("1");
+				sellerTbMapper.updateByPrimaryKeySelective(sellerTb);
+				Thread.sleep(10000);
 		}
 
 		return new ResponseEntity<ResponseResult>(

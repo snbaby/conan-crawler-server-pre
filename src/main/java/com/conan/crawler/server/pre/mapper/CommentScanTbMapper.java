@@ -1,5 +1,7 @@
 package com.conan.crawler.server.pre.mapper;
 
+import java.util.List;
+
 import com.conan.crawler.server.pre.entity.CommentScanTb;
 
 public interface CommentScanTbMapper {
@@ -39,4 +41,6 @@ public interface CommentScanTbMapper {
 	 * @mbg.generated  Sun Apr 08 17:12:00 CST 2018
 	 */
 	int updateByPrimaryKey(CommentScanTb record);
+	
+	List<CommentScanTb> selectByStatus(String status);
 }

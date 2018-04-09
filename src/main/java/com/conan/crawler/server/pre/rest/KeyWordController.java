@@ -51,7 +51,7 @@ public class KeyWordController {
 				record.setCrtUser("admin");
 				record.setCrtTime(new Date());
 				record.setStatus("0");
-				record.setCrtIp("127.0.0.1");
+				record.setCrtIp(Utils.getIp());
 				keyWordTbMapper.insert(record);
 			}
 		}
@@ -74,7 +74,7 @@ public class KeyWordController {
 				System.out.println("start---key-word-scan---"+keyWordTb.getKeyWord()+"---"+Utils.getKeyWordUrl(keyWordTb.getKeyWord(), index*44));
 				ListenableFuture future = kafkaTemplate.send("key-word-scan", keyWordTb.getKeyWord(),Utils.getKeyWordUrl(keyWordTb.getKeyWord(), index*44));
 				System.out.println("end---key-word-scan---"+keyWordTb.getKeyWord()+"---"+Utils.getKeyWordUrl(keyWordTb.getKeyWord(), index*44));
-				Thread.sleep(20000);
+				Thread.sleep(10000);
 			}
 			keyWordTb.setStatus("1");
 			keyWordTbMapper.updateByPrimaryKey(keyWordTb);

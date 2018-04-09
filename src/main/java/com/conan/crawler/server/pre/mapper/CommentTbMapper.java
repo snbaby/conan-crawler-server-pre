@@ -44,4 +44,5 @@ public interface CommentTbMapper {
 	
 	List<CommentTb> selectAll();
 	List<CommentTb> selectByStatus(String status);
+	CommentTb selectByItemId(String itemId);
 }
