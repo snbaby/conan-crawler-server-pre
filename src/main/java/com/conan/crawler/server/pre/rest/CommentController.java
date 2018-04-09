@@ -33,7 +33,7 @@ public class CommentController {
 
 	@RequestMapping(value = "scan-total-start", method = RequestMethod.POST)
 	@ResponseBody
-	@Scheduled(fixedDelay = 60000, initialDelay=60000)
+	@Scheduled(fixedDelay = 60000)
 	public ResponseEntity<ResponseResult> postCommentScanTotalStart() throws Exception {
 		List<GoodsTb> goodsTbList = new ArrayList<>();
 		goodsTbList = goodsTbMapper.selectByStatus("0");
@@ -58,7 +58,7 @@ public class CommentController {
 
 	@RequestMapping(value = "scan-detail-start", method = RequestMethod.POST)
 	@ResponseBody
-	@Scheduled(fixedDelay = 60000, initialDelay=60000)
+	@Scheduled(fixedDelay = 60000)
 	public ResponseEntity<ResponseResult> postCommentScanDetailStart() throws Exception {
 		List<CommentTb> commentTbList = new ArrayList<>();
 		commentTbList = commentTbMapper.selectByStatus("0");
