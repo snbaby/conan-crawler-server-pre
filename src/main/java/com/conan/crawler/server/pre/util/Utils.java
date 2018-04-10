@@ -20,7 +20,7 @@ public class Utils {
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return "https://s.taobao.com/search?q=" + keyWord + "&s=" + pageNo;
+			return "https://s.taobao.com/search?q=" + keyWord + "&s=" + pageNo + "&style=grid";
 		}
 	}
 
