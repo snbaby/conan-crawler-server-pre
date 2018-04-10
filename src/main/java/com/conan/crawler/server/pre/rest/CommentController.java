@@ -49,7 +49,7 @@ public class CommentController {
 					+ Utils.getCommentTotalUrl(goodsTb.getItemId(), goodsTb.getShopType()));
 			goodsTb.setStatus("1");
 			goodsTbMapper.updateByPrimaryKeySelective(goodsTb);
-			Thread.sleep(10000);
+			Thread.sleep(2000);
 		}
 
 		return new ResponseEntity<ResponseResult>(new ResponseResult(HttpStatus.CREATED.toString(), goodsTbList),
@@ -85,7 +85,7 @@ public class CommentController {
 						Utils.getCommentDetailUrl(itemId, userNumberId, pageNo, shopType));
 				System.out.println("end---comment-detail-scan---" + itemId + "---"
 						+ Utils.getCommentDetailUrl(itemId, userNumberId, pageNo, shopType));
-				Thread.sleep(10000);
+				Thread.sleep(2000);
 			}
 			commentTb.setStatus("1");
 			commentTbMapper.updateByPrimaryKeySelective(commentTb);
