@@ -53,7 +53,7 @@ public class DataReportController {
 
 	@RequestMapping(value = "report", method = RequestMethod.POST)
 	@ResponseBody
-	@Scheduled(fixedDelay = 10000)
+	@Scheduled(fixedDelay = 10000, initialDelay=60000)
 	public ResponseEntity<ResponseResult> postRateScanStart() throws Exception {
 		List<CommentScanTb> updateDataList = new ArrayList<>();
 		List<CommentScanTb> commentScanTbList = commentScanTbMapper.selectByStatus("0");
