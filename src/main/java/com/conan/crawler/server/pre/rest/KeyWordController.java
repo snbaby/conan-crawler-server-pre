@@ -66,9 +66,6 @@ public class KeyWordController {
 	public ResponseEntity<ResponseResult> postKeyWordScanStart() throws Exception {
 		List<KeyWordTb> keyWordTbList = new ArrayList<>();
 		keyWordTbList = keyWordTbMapper.selectByStatus("0");
-		if(keyWordTbList==null||keyWordTbList.isEmpty()) {
-			keyWordTbList = keyWordTbMapper.selectAll();
-		}
 		for (KeyWordTb keyWordTb : keyWordTbList) {
 			for (int index = 0; index < queryPageNumber; index++) {
 				System.out.println("start---key-word-scan---"+keyWordTb.getKeyWord()+"---"+Utils.getKeyWordUrl(keyWordTb.getKeyWord(), index*44));

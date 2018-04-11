@@ -16,7 +16,7 @@ public class Utils {
 
 	public static String getKeyWordUrl(String keyWord, int pageNo) {
 		try {
-			return "https://s.taobao.com/search?q=" + URLEncoder.encode(keyWord, "utf-8") + "&s=" + pageNo;
+			return "https://s.taobao.com/search?q=" + URLEncoder.encode(keyWord, "utf-8") + "&s=" + pageNo + "&style=grid";
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

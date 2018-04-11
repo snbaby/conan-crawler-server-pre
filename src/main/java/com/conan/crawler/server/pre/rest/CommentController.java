@@ -37,9 +37,6 @@ public class CommentController {
 	public ResponseEntity<ResponseResult> postCommentScanTotalStart() throws Exception {
 		List<GoodsTb> goodsTbList = new ArrayList<>();
 		goodsTbList = goodsTbMapper.selectByStatus("0");
-		if(goodsTbList==null || goodsTbList.isEmpty()) {
-			goodsTbList = goodsTbMapper.selectAll();
-		}
 		for (GoodsTb goodsTb : goodsTbList) {
 			System.out.println("start---comment-total-scan---" + goodsTb.getItemId() + "---"
 					+ Utils.getCommentTotalUrl(goodsTb.getItemId(), goodsTb.getShopType()));
@@ -62,9 +59,6 @@ public class CommentController {
 	public ResponseEntity<ResponseResult> postCommentScanDetailStart() throws Exception {
 		List<CommentTb> commentTbList = new ArrayList<>();
 		commentTbList = commentTbMapper.selectByStatus("0");
-		if(commentTbList == null || commentTbList.isEmpty()) {
-			commentTbList = commentTbMapper.selectAll();
-		}
 		for (CommentTb commentTb : commentTbList) {
 			String itemId = commentTb.getItemId();
 			int total = Integer.parseInt(commentTb.getTotal());
