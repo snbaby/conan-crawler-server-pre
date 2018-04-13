@@ -41,7 +41,6 @@ public class ShopController {
 				System.out.println("end---shop-scan---"+sellerTb.getUserNumberId()+"---"+Utils.getShopUrl(sellerTb.getUserNumberId()));
 				sellerTb.setStatus("1");
 				sellerTbMapper.updateByPrimaryKeySelective(sellerTb);
-				Thread.sleep(2000);
 		}
 
 		return new ResponseEntity<ResponseResult>(

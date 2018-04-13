@@ -71,7 +71,6 @@ public class KeyWordController {
 				System.out.println("start---key-word-scan---"+keyWordTb.getKeyWord()+"---"+Utils.getKeyWordUrl(keyWordTb.getKeyWord(), index*44));
 				ListenableFuture future = kafkaTemplate.send("key-word-scan", keyWordTb.getKeyWord(),Utils.getKeyWordUrl(keyWordTb.getKeyWord(), index*44));
 				System.out.println("end---key-word-scan---"+keyWordTb.getKeyWord()+"---"+Utils.getKeyWordUrl(keyWordTb.getKeyWord(), index*44));
-				Thread.sleep(2000);
 			}
 			keyWordTb.setStatus("1");
 			keyWordTbMapper.updateByPrimaryKey(keyWordTb);
