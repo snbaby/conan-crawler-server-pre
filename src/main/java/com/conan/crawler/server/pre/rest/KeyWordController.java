@@ -8,11 +8,10 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,18 +22,23 @@ import org.springframework.web.multipart.MultipartFile;
 import com.conan.crawler.server.pre.entity.KeyWordTb;
 import com.conan.crawler.server.pre.entity.ResponseResult;
 import com.conan.crawler.server.pre.mapper.KeyWordTbMapper;
+import com.conan.crawler.server.pre.util.HttpClientUtils;
 import com.conan.crawler.server.pre.util.Utils;
+
+import net.sf.json.JSONObject;
 
 @RestController
 @RequestMapping("key-word")
 public class KeyWordController {
 
-	private int queryPageNumber = 1;
-
 	@Autowired
 	private KeyWordTbMapper keyWordTbMapper;
-	@Autowired
-	private KafkaTemplate kafkaTemplate;
+
+	@Value("${conan.url.middleware}")
+	private String middlewareUrl;
+
+	@Value("${conan.key-word-query-page-number}")
+	private int queryPageNumber;
 
 	@RequestMapping(value = "upload", method = RequestMethod.POST)
 	@ResponseBody
@@ -60,25 +64,32 @@ public class KeyWordController {
 				HttpStatus.CREATED);
 	}
 
-	@RequestMapping(value = "scan-start", method = RequestMethod.POST)
-	@ResponseBody
-	@Scheduled(fixedDelay = 60000, initialDelay=60000)
-	public ResponseEntity<ResponseResult> postKeyWordScanStart() throws Exception {
+	@Scheduled(fixedDelay = 60000, initialDelay = 60000)
+	public void postKeyWordScanStart() {
 		List<KeyWordTb> keyWordTbList = new ArrayList<>();
 		keyWordTbList = keyWordTbMapper.selectByStatus("0");
 		for (KeyWordTb keyWordTb : keyWordTbList) {
 			for (int index = 0; index < queryPageNumber; index++) {
-				System.out.println("start---key-word-scan---"+keyWordTb.getKeyWord()+"---"+Utils.getKeyWordUrl(keyWordTb.getKeyWord(), index*44));
-				ListenableFuture future = kafkaTemplate.send("key-word-scan", keyWordTb.getKeyWord(),Utils.getKeyWordUrl(keyWordTb.getKeyWord(), index*44));
-				System.out.println("end---key-word-scan---"+keyWordTb.getKeyWord()+"---"+Utils.getKeyWordUrl(keyWordTb.getKeyWord(), index*44));
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("id", keyWordTb.getId());
+				jsonObject.put("key", keyWordTb.getKeyWord());
+				jsonObject.put("value", Utils.getKeyWordUrl(keyWordTb.getKeyWord(), index * 44));
+				if (HttpClientUtils.httpPostWithJson(jsonObject, middlewareUrl + "/key-word/scan")) {
+					System.out.println("start---key-word-scan---" + keyWordTb.getKeyWord() + "---"
+							+ Utils.getKeyWordUrl(keyWordTb.getKeyWord(), index * 44));
+					keyWordTb.setStatus("1");
+					keyWordTbMapper.updateByPrimaryKey(keyWordTb);
+					System.out.println("end---key-word-scan---" + keyWordTb.getKeyWord() + "---"
+							+ Utils.getKeyWordUrl(keyWordTb.getKeyWord(), index * 44));
+				} else {
+					System.out.println("exception---key-word-scan---" + keyWordTb.getKeyWord() + "---"
+							+ Utils.getKeyWordUrl(keyWordTb.getKeyWord(), index * 44));
+				}
+				;
 			}
 			keyWordTb.setStatus("1");
 			keyWordTbMapper.updateByPrimaryKey(keyWordTb);
 		}
-
-		return new ResponseEntity<ResponseResult>(
-				new ResponseResult(HttpStatus.CREATED.toString(), keyWordTbList),
-				HttpStatus.CREATED);
 	}
 
 }

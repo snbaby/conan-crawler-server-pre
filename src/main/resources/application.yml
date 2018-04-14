@@ -13,6 +13,7 @@ logging:
     guru.springframework.controllers: TRACE
     com.dy.springboot.server.mapper: DEBUG
 conan:
+  key-word-query-page-number: 5
   url:
     center: http://172.27.16.12:8080
     middleware: http://172.27.16.4:80

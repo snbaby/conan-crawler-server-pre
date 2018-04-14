@@ -4,59 +4,52 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.conan.crawler.server.pre.entity.CommentTb;
 import com.conan.crawler.server.pre.entity.GoodsTb;
-import com.conan.crawler.server.pre.entity.ResponseResult;
 import com.conan.crawler.server.pre.mapper.CommentTbMapper;
 import com.conan.crawler.server.pre.mapper.GoodsTbMapper;
+import com.conan.crawler.server.pre.util.HttpClientUtils;
 import com.conan.crawler.server.pre.util.Utils;
 
-@RestController
-@RequestMapping("comment")
+import net.sf.json.JSONObject;
+
 public class CommentController {
-	@Autowired
-	private KafkaTemplate kafkaTemplate;
 	@Autowired
 	private GoodsTbMapper goodsTbMapper;
 	@Autowired
 	private CommentTbMapper commentTbMapper;
+	
+	@Value("${conan.url.middleware}")
+	private String middlewareUrl;
 
-	@RequestMapping(value = "scan-total-start", method = RequestMethod.POST)
-	@ResponseBody
 	@Scheduled(fixedDelay = 60000, initialDelay=60000)
-	public ResponseEntity<ResponseResult> postCommentScanTotalStart() throws Exception {
+	public void postCommentScanTotalStart(){
 		List<GoodsTb> goodsTbList = new ArrayList<>();
 		goodsTbList = goodsTbMapper.selectByStatus("0");
 		for (GoodsTb goodsTb : goodsTbList) {
-			System.out.println("start---comment-total-scan---" + goodsTb.getItemId() + "---"
-					+ Utils.getCommentTotalUrl(goodsTb.getItemId(), goodsTb.getShopType()));
-			ListenableFuture future = kafkaTemplate.send("comment-total-scan", goodsTb.getItemId(),
-					Utils.getCommentTotalUrl(goodsTb.getItemId(), goodsTb.getShopType()));
-			System.out.println("end---comment-total-scan---" + goodsTb.getItemId() + "---"
-					+ Utils.getCommentTotalUrl(goodsTb.getItemId(), goodsTb.getShopType()));
-			goodsTb.setStatus("1");
-			goodsTbMapper.updateByPrimaryKeySelective(goodsTb);
-			Thread.sleep(2000);
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("id", goodsTb.getId());
+			jsonObject.put("key", goodsTb.getItemId());
+			jsonObject.put("value", Utils.getCommentTotalUrl(goodsTb.getItemId(), goodsTb.getShopType()));
+			if(HttpClientUtils.httpPostWithJson(jsonObject, middlewareUrl+"/comment/total-scan")) {
+				System.out.println("start---comment-total-scan---" + goodsTb.getItemId() + "---"
+						+ Utils.getCommentTotalUrl(goodsTb.getItemId(), goodsTb.getShopType()));
+				goodsTb.setStatus("1");
+				goodsTbMapper.updateByPrimaryKeySelective(goodsTb);
+				System.out.println("end---comment-total-scan---" + goodsTb.getItemId() + "---"
+						+ Utils.getCommentTotalUrl(goodsTb.getItemId(), goodsTb.getShopType()));
+			}else{
+				System.out.println("exception---comment-total-scan---" + goodsTb.getItemId() + "---"
+						+ Utils.getCommentTotalUrl(goodsTb.getItemId(), goodsTb.getShopType()));
+			};
 		}
-
-		return new ResponseEntity<ResponseResult>(new ResponseResult(HttpStatus.CREATED.toString(), goodsTbList),
-				HttpStatus.CREATED);
 	}
 
-	@RequestMapping(value = "scan-detail-start", method = RequestMethod.POST)
-	@ResponseBody
 	@Scheduled(fixedDelay = 60000, initialDelay=60000)
-	public ResponseEntity<ResponseResult> postCommentScanDetailStart() throws Exception {
+	public void postCommentScanDetailStart(){
 		List<CommentTb> commentTbList = new ArrayList<>();
 		commentTbList = commentTbMapper.selectByStatus("0");
 		for (CommentTb commentTb : commentTbList) {
@@ -71,21 +64,27 @@ public class CommentController {
 			} else {
 				maxPage = total / 20 + 1;
 			}
+			if(maxPage>255) {
+				maxPage = 255;
+			}
 
 			for (int pageNo = 1; pageNo <= maxPage; pageNo++) {
-				System.out.println("start---comment-detail-scan---" + itemId + "---"
-						+ Utils.getCommentDetailUrl(itemId, userNumberId, pageNo, shopType));
-				ListenableFuture future = kafkaTemplate.send("comment-detail-scan", commentTb.getItemId(),
-						Utils.getCommentDetailUrl(itemId, userNumberId, pageNo, shopType));
-				System.out.println("end---comment-detail-scan---" + itemId + "---"
-						+ Utils.getCommentDetailUrl(itemId, userNumberId, pageNo, shopType));
-				Thread.sleep(2000);
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("id", commentTb.getId());
+				jsonObject.put("key", commentTb.getItemId());
+				jsonObject.put("value", Utils.getCommentDetailUrl(itemId, userNumberId, pageNo, shopType));
+				if(HttpClientUtils.httpPostWithJson(jsonObject, middlewareUrl+"/comment/detail-scan")) {
+					System.out.println("start---comment-detail-scan---" + itemId + "---"
+							+ Utils.getCommentDetailUrl(itemId, userNumberId, pageNo, shopType));
+					commentTb.setStatus("1");
+					commentTbMapper.updateByPrimaryKeySelective(commentTb);
+					System.out.println("end---comment-detail-scan---" + itemId + "---"
+							+ Utils.getCommentDetailUrl(itemId, userNumberId, pageNo, shopType));
+				}else{
+					System.out.println("exception---comment-detail-scan---" + itemId + "---"
+							+ Utils.getCommentDetailUrl(itemId, userNumberId, pageNo, shopType));
+				};
 			}
-			commentTb.setStatus("1");
-			commentTbMapper.updateByPrimaryKeySelective(commentTb);
 		}
-
-		return new ResponseEntity<ResponseResult>(new ResponseResult(HttpStatus.CREATED.toString(), commentTbList),
-				HttpStatus.CREATED);
 	}
 }

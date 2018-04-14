@@ -4,38 +4,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.conan.crawler.server.pre.entity.CommentScanTb;
 import com.conan.crawler.server.pre.entity.CommentTb;
 import com.conan.crawler.server.pre.entity.GoodsTb;
-import com.conan.crawler.server.pre.entity.ResponseResult;
 import com.conan.crawler.server.pre.entity.ShopScanTb;
 import com.conan.crawler.server.pre.mapper.CommentScanTbMapper;
 import com.conan.crawler.server.pre.mapper.CommentTbMapper;
 import com.conan.crawler.server.pre.mapper.GoodsTbMapper;
 import com.conan.crawler.server.pre.mapper.ShopScanTbMapper;
+import com.conan.crawler.server.pre.util.HttpClientUtils;
 import com.conan.crawler.server.pre.util.Utils;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-@RestController
-@RequestMapping("data")
 public class DataReportController {
 	@Autowired
 	private CommentTbMapper commentTbMapper;
@@ -49,12 +36,11 @@ public class DataReportController {
 	@Autowired
 	private GoodsTbMapper goodsTbMapper;
 	
-	private static String URL = "http://223.93.147.217:4433/PtBrain/listen";
-
-	@RequestMapping(value = "report", method = RequestMethod.POST)
-	@ResponseBody
-	@Scheduled(fixedDelay = 10000, initialDelay=60000)
-	public ResponseEntity<ResponseResult> postRateScanStart() throws Exception {
+	@Value("${conan.url.analysis}")
+	private String analysisUrl;
+	
+	@Scheduled(fixedDelay = 2000, initialDelay=60000)
+	public void postRateScanStart() {
 		List<CommentScanTb> updateDataList = new ArrayList<>();
 		List<CommentScanTb> commentScanTbList = commentScanTbMapper.selectByStatus("0");
 		JSONArray jsonArray = new JSONArray();
@@ -104,34 +90,16 @@ public class DataReportController {
 			nvps.add(new BasicNameValuePair("biztype", "1"));
 			nvps.add(new BasicNameValuePair("jdata", jsonArray.toString()));
 			nvps.add(new BasicNameValuePair("sign", Utils.getSign(jsonArray.toString())));
-			try {
-				CloseableHttpClient httpclient = null;
-				CloseableHttpResponse httpresponse = null;
-				try {
-					httpclient = HttpClients.createDefault();
-					HttpPost httpPost = new HttpPost(URL);
-					httpPost.setEntity(new UrlEncodedFormEntity(nvps, "UTF-8"));  
-					httpresponse = httpclient.execute(httpPost);
-					if(httpresponse.getStatusLine().getStatusCode()==200) {
-						for(CommentScanTb commentScanTb:updateDataList) {
-							commentScanTb.setStatus("1");
-							commentScanTbMapper.updateByPrimaryKey(commentScanTb);
-						}
-					}
-				} finally {
-					if (httpclient != null) {
-						httpclient.close();
-					}
-					if (httpresponse != null) {
-						httpresponse.close();
-					}
+			System.out.println("start---data-post---");
+			if(HttpClientUtils.httpPostWithForm(nvps, analysisUrl)) {
+				for(CommentScanTb commentScanTb:updateDataList) {
+					commentScanTb.setStatus("1");
+					commentScanTbMapper.updateByPrimaryKey(commentScanTb);
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
+				System.out.println("end---data-post---");
+			}else {
+				System.out.println("exception---data-post---");
 			}
 		}
-		
-		return new ResponseEntity<ResponseResult>(new ResponseResult(HttpStatus.CREATED.toString(), commentScanTbList),
-				HttpStatus.CREATED);
 	}
 }
