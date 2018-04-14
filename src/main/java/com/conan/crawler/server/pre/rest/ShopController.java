@@ -6,8 +6,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.conan.crawler.server.pre.entity.SellerTb;
 import com.conan.crawler.server.pre.mapper.SellerTbMapper;
@@ -16,8 +14,6 @@ import com.conan.crawler.server.pre.util.Utils;
 
 import net.sf.json.JSONObject;
 
-@RestController
-@RequestMapping("shop")
 public class ShopController {
 	@Autowired
 	private SellerTbMapper sellerTbMapper;
