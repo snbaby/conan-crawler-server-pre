@@ -8,6 +8,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import com.conan.crawler.server.pre.entity.CommentScanTb;
 import com.conan.crawler.server.pre.entity.CommentTb;
@@ -23,6 +24,7 @@ import com.conan.crawler.server.pre.util.Utils;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+@Component
 public class DataReportController {
 	@Autowired
 	private CommentTbMapper commentTbMapper;
@@ -41,8 +43,10 @@ public class DataReportController {
 	
 	@Scheduled(fixedDelay = 2000, initialDelay=60000)
 	public void postRateScanStart() {
+		System.out.println("postRateScanStart--"+analysisUrl);
 		List<CommentScanTb> updateDataList = new ArrayList<>();
 		List<CommentScanTb> commentScanTbList = commentScanTbMapper.selectByStatus("0");
+		System.out.println("postRateScanStart--"+commentScanTbList.size());
 		JSONArray jsonArray = new JSONArray();
 		for(CommentScanTb commentScanTb:commentScanTbList) {
 			GoodsTb goodsTb = goodsTbMapper.selectByItemId(commentScanTb.getItemId());

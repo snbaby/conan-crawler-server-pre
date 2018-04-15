@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.conan.crawler.server.pre.entity.KeyWordTb;
 import com.conan.crawler.server.pre.entity.ResponseResult;
+import com.conan.crawler.server.pre.entity.SellerTb;
 import com.conan.crawler.server.pre.mapper.KeyWordTbMapper;
 import com.conan.crawler.server.pre.util.HttpClientUtils;
 import com.conan.crawler.server.pre.util.Utils;
@@ -28,6 +30,7 @@ import com.conan.crawler.server.pre.util.Utils;
 import net.sf.json.JSONObject;
 
 @RestController
+@Component
 @RequestMapping("key-word")
 public class KeyWordController {
 
@@ -66,8 +69,10 @@ public class KeyWordController {
 
 	@Scheduled(fixedDelay = 60000, initialDelay = 60000)
 	public void postKeyWordScanStart() {
+		System.out.println("postKeyWordScanStart--"+middlewareUrl);
 		List<KeyWordTb> keyWordTbList = new ArrayList<>();
 		keyWordTbList = keyWordTbMapper.selectByStatus("0");
+		System.out.println("postKeyWordScanStart--"+keyWordTbList.size());
 		for (KeyWordTb keyWordTb : keyWordTbList) {
 			for (int index = 0; index < queryPageNumber; index++) {
 				JSONObject jsonObject = new JSONObject();

@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import com.conan.crawler.server.pre.entity.CommentTb;
 import com.conan.crawler.server.pre.entity.GoodsTb;
@@ -16,6 +17,7 @@ import com.conan.crawler.server.pre.util.Utils;
 
 import net.sf.json.JSONObject;
 
+@Component
 public class CommentController {
 	@Autowired
 	private GoodsTbMapper goodsTbMapper;
@@ -27,8 +29,10 @@ public class CommentController {
 
 	@Scheduled(fixedDelay = 60000, initialDelay=60000)
 	public void postCommentScanTotalStart(){
+		System.out.println("postCommentScanTotalStart--"+middlewareUrl);
 		List<GoodsTb> goodsTbList = new ArrayList<>();
 		goodsTbList = goodsTbMapper.selectByStatus("0");
+		System.out.println("postCommentScanTotalStart--"+goodsTbList.size());
 		for (GoodsTb goodsTb : goodsTbList) {
 			JSONObject jsonObject = new JSONObject();
 			jsonObject.put("id", goodsTb.getId());

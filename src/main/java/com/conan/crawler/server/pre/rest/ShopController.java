@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import com.conan.crawler.server.pre.entity.SellerTb;
 import com.conan.crawler.server.pre.mapper.SellerTbMapper;
@@ -14,6 +15,7 @@ import com.conan.crawler.server.pre.util.Utils;
 
 import net.sf.json.JSONObject;
 
+@Component
 public class ShopController {
 	@Autowired
 	private SellerTbMapper sellerTbMapper;
@@ -23,8 +25,10 @@ public class ShopController {
 
 	@Scheduled(fixedDelay = 60000, initialDelay=60000)
 	public void postShopScanStart(){
+		System.out.println("postShopScanStart--"+middlewareUrl);
 		List<SellerTb> sellerTbList = new ArrayList<>();
 		sellerTbList = sellerTbMapper.selectByStatus("0");
+		System.out.println("postShopScanStart--"+sellerTbList.size());
 		for (SellerTb sellerTb : sellerTbList) {
 				JSONObject jsonObject = new JSONObject();
 				jsonObject.put("id", sellerTb.getId());

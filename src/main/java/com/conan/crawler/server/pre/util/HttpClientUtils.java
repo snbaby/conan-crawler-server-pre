@@ -44,7 +44,7 @@ public class HttpClientUtils {
 	            isSuccess = false;
 	        }else{
 	        	System.out.println("请求成功: "+url);
-	            isSuccess = false;
+	            isSuccess = true;
 	        }
 	    } catch (Exception e) {
 	        e.printStackTrace();
@@ -93,7 +93,7 @@ public class HttpClientUtils {
 	            isSuccess = false;
 	        }else{
 	        	System.out.println("请求成功: "+url);
-	            isSuccess = false;
+	            isSuccess = true;
 	        }
 	    } catch (Exception e) {
 	        e.printStackTrace();
