@@ -41,8 +41,13 @@
 			enableUpdateByExample="false" enableDeleteByExample="false"
 			enableSelectByExample="false" selectByExampleQueryId="false">
 		</table> -->
-		<table schema="conan_crawler" tableName="shop_scan_tb"
+		<!-- <table schema="conan_crawler" tableName="shop_scan_tb"
 			domainObjectName="ShopScanTb" enableCountByExample="false"
+			enableUpdateByExample="false" enableDeleteByExample="false"
+			enableSelectByExample="false" selectByExampleQueryId="false">
+		</table> -->
+		<table schema="conan_crawler" tableName="analysis_v"
+			domainObjectName="AnalysisV" enableCountByExample="false"
 			enableUpdateByExample="false" enableDeleteByExample="false"
 			enableSelectByExample="false" selectByExampleQueryId="false">
 		</table>
