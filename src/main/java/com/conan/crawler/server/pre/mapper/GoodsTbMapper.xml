@@ -67,6 +67,7 @@
     <include refid="Base_Column_List" />
     from goods_tb
     where status = #{status,jdbcType=VARCHAR}
+    limit 100
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     <!--
