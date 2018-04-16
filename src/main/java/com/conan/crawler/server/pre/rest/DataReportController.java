@@ -59,7 +59,7 @@ public class DataReportController {
 			jsonObject.put("review_content", analysisV.getReviewContent());
 			jsonObject.put("is_super_vip", analysisV.getIsSuperVip());
 			jsonObject.put("buyer_star", analysisV.getBuyerStar());
-			jsonObject.put("gmt_create_time", Utils.getDateString(analysisV.getCrtTime()));
+			jsonObject.put("gmt_crawler_time", Utils.getDateString(analysisV.getCrtTime()));
 			jsonObject.put("crawler_machine_id", analysisV.getCrtIp());
 			jsonObject.put("shop_id", analysisV.getShopId());
 			jsonArray.add(jsonObject);
