@@ -61,7 +61,12 @@ public class HttpClientUtils {
 			isSuccess = false;
 		} finally {
 			if (post != null) {
-				post.releaseConnection();
+				try {
+					post.releaseConnection();
+					Thread.sleep(200);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		return isSuccess;
@@ -106,7 +111,12 @@ public class HttpClientUtils {
 			isSuccess = false;
 		} finally {
 			if (post != null) {
-				post.releaseConnection();
+				try {
+					post.releaseConnection();
+					Thread.sleep(200);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		return isSuccess;
