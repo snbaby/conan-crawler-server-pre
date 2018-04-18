@@ -78,6 +78,11 @@ public class DataReportController {
 			}
 			System.out.println("end---data-post---");
 		}else {
+			for(AnalysisV analysisV:analysisVList) {
+				CommentScanTb commentScanTb = commentScanTbMapper.selectByPrimaryKey(analysisV.getId());
+				commentScanTb.setStatus("-1");
+				commentScanTbMapper.updateByPrimaryKey(commentScanTb);
+			}
 			System.out.println("exception---data-post---");
 		}
 	}
