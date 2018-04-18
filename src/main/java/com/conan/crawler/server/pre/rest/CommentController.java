@@ -27,7 +27,7 @@ public class CommentController {
 	@Value("${conan.url.middleware}")
 	private String middlewareUrl;
 
-	@Scheduled(fixedDelay = 60000, initialDelay=60000)
+	@Scheduled(fixedDelay = 30000, initialDelay=60000)
 	public void postCommentScanTotalStart(){
 		System.out.println("postCommentScanTotalStart--"+middlewareUrl);
 		List<GoodsTb> goodsTbList = new ArrayList<>();
@@ -52,7 +52,7 @@ public class CommentController {
 		}
 	}
 
-	@Scheduled(fixedDelay = 60000, initialDelay=60000)
+	@Scheduled(fixedDelay = 30000, initialDelay=60000)
 	public void postCommentScanDetailStart(){
 		List<CommentTb> commentTbList = new ArrayList<>();
 		commentTbList = commentTbMapper.selectByStatus("0");

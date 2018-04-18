@@ -67,7 +67,7 @@ public class KeyWordController {
 				HttpStatus.CREATED);
 	}
 
-	@Scheduled(fixedDelay = 60000, initialDelay = 60000)
+	@Scheduled(fixedDelay = 30000, initialDelay = 60000)
 	public void postKeyWordScanStart() {
 		System.out.println("postKeyWordScanStart--"+middlewareUrl);
 		List<KeyWordTb> keyWordTbList = new ArrayList<>();
