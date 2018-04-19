@@ -5,7 +5,7 @@
 
 	<groupId>com.conan.crawler.server.pre</groupId>
 	<artifactId>conan-crawler-server-pre</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.7071-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>conan-crawler-server-pre</name>

@@ -25,8 +25,8 @@ public class HttpClientUtils {
 			HttpClient httpClient = new DefaultHttpClient();
 
 			// 设置超时时间
-			httpClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 2000);
-			httpClient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 2000);
+			httpClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 10000);
+			httpClient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 10000);
 
 			post = new HttpPost(url);
 			// 构造消息头
@@ -80,8 +80,8 @@ public class HttpClientUtils {
 			HttpClient httpClient = new DefaultHttpClient();
 
 			// 设置超时时间
-			httpClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 2000);
-			httpClient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 2000);
+			httpClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 10000);
+			httpClient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 10000);
 
 			post = new HttpPost(url);
 			// 构造消息头

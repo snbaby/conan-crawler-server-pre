@@ -34,9 +34,9 @@ public class DataReportController {
 	
 	@Scheduled(fixedDelay = 1000, initialDelay=60000)
 	public void postRateScanStart() {
-		System.out.println("postRateScanStart--"+analysisUrl);
+		System.out.println("postRateScanStart--"+Utils.getDateString());
 		List<AnalysisV> analysisVList = analysisVMapper.selectAll();
-		System.out.println("postRateScanStart--"+analysisVList.size());
+		System.out.println("postRateScan01--"+analysisVList.size()+"--"+Utils.getDateString());
 		if(analysisVList == null || analysisVList.isEmpty()) {
 			System.out.println("postRateScanStart--null--"+analysisVList.size());
 			return;
@@ -69,21 +69,23 @@ public class DataReportController {
 		nvps.add(new BasicNameValuePair("biztype", "1"));
 		nvps.add(new BasicNameValuePair("jdata", jsonArray.toString()));
 		nvps.add(new BasicNameValuePair("sign", Utils.getSign(jsonArray.toString())));
-		System.out.println("start---data-post---");
+		System.out.println("postRateScan02--"+Utils.getDateString());
 		if(HttpClientUtils.httpPostWithForm(nvps, analysisUrl)) {
+			System.out.println("postRateScan03--"+Utils.getDateString());
 			for(AnalysisV analysisV:analysisVList) {
 				CommentScanTb commentScanTb = commentScanTbMapper.selectByPrimaryKey(analysisV.getId());
 				commentScanTb.setStatus("1");
 				commentScanTbMapper.updateByPrimaryKey(commentScanTb);
 			}
-			System.out.println("end---data-post---");
+			System.out.println("postRateScanEnd--"+Utils.getDateString());
 		}else {
+			System.out.println("postRateScanExceptionStart--"+Utils.getDateString());
 			for(AnalysisV analysisV:analysisVList) {
 				CommentScanTb commentScanTb = commentScanTbMapper.selectByPrimaryKey(analysisV.getId());
 				commentScanTb.setStatus("-1");
 				commentScanTbMapper.updateByPrimaryKey(commentScanTb);
 			}
-			System.out.println("exception---data-post---");
+			System.out.println("postRateScanExceptionEnd--"+Utils.getDateString());
 		}
 	}
 	

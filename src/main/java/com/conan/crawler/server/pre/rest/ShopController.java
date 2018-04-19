@@ -23,7 +23,6 @@ public class ShopController {
 	@Value("${conan.url.middleware}")
 	private String middlewareUrl;
 
-	@Scheduled(fixedDelay = 30000, initialDelay=60000)
 	public void postShopScanStart(){
 		System.out.println("postShopScanStart--"+middlewareUrl);
 		List<SellerTb> sellerTbList = new ArrayList<>();

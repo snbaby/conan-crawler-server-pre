@@ -109,5 +109,10 @@ public class Utils {
 			return "127.0.0.1";
 		}
 	}
+	
+	public static String getDateString() {
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return df.format(new Date());
+	}
 
 }
