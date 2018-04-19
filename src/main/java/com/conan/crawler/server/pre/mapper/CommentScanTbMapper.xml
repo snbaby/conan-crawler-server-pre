@@ -217,4 +217,24 @@
       status = #{status,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
+  <update id="updateBatchStatusSuccess"  parameterType="java.util.List">  
+	  update comment_scan_tb
+	  <set>
+	      status='1'
+	  </set>
+	  where id in
+	  <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+	  #{item}
+	  </foreach>
+  </update>
+  <update id="updateBatchStatusFaild"  parameterType="java.util.List">  
+	  update comment_scan_tb
+	  <set>
+	      status='-1'
+	  </set>
+	  where id in 
+	  <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+	  #{item}
+	  </foreach>
+  </update>
 </mapper>

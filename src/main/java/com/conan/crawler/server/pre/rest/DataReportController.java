@@ -41,6 +41,7 @@ public class DataReportController {
 			System.out.println("postRateScanStart--null--"+analysisVList.size());
 			return;
 		}
+		List<String> idList = new ArrayList<>();
 		JSONArray jsonArray = new JSONArray();
 		for(AnalysisV analysisV:analysisVList) {
 			JSONObject jsonObject = new JSONObject();
@@ -63,6 +64,7 @@ public class DataReportController {
 			jsonObject.put("crawler_machine_id", analysisV.getCrtIp());
 			jsonObject.put("shop_id", analysisV.getShopId());
 			jsonArray.add(jsonObject);
+			idList.add(analysisV.getId());
 		}
 		List<NameValuePair> nvps = new ArrayList<NameValuePair>();
 		nvps.add(new BasicNameValuePair("version", "1"));
@@ -72,19 +74,11 @@ public class DataReportController {
 		System.out.println("postRateScan02--"+Utils.getDateString());
 		if(HttpClientUtils.httpPostWithForm(nvps, analysisUrl)) {
 			System.out.println("postRateScan03--"+Utils.getDateString());
-			for(AnalysisV analysisV:analysisVList) {
-				CommentScanTb commentScanTb = commentScanTbMapper.selectByPrimaryKey(analysisV.getId());
-				commentScanTb.setStatus("1");
-				commentScanTbMapper.updateByPrimaryKey(commentScanTb);
-			}
+			commentScanTbMapper.updateBatchStatusSuccess(idList);
 			System.out.println("postRateScanEnd--"+Utils.getDateString());
 		}else {
 			System.out.println("postRateScanExceptionStart--"+Utils.getDateString());
-			for(AnalysisV analysisV:analysisVList) {
-				CommentScanTb commentScanTb = commentScanTbMapper.selectByPrimaryKey(analysisV.getId());
-				commentScanTb.setStatus("-1");
-				commentScanTbMapper.updateByPrimaryKey(commentScanTb);
-			}
+			commentScanTbMapper.updateBatchStatusFaild(idList);
 			System.out.println("postRateScanExceptionEnd--"+Utils.getDateString());
 		}
 	}

@@ -43,4 +43,7 @@ public interface CommentScanTbMapper {
 	int updateByPrimaryKey(CommentScanTb record);
 	
 	List<CommentScanTb> selectByStatus(String status);
+	
+	void updateBatchStatusSuccess(List<String> idList);
+	void updateBatchStatusFaild(List<String> idList);
 }
