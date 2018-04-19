@@ -2,7 +2,7 @@ server:
   port: 7071
 spring:
   datasource:
-    url: jdbc:mysql://118.24.173.247:3306/conan_crawler?autoReconnect=true&useUnicode=true&characterEncoding=utf8&useSSL=false
+    url: jdbc:mysql://172.27.16.4:3306/conan_crawler?autoReconnect=true&useUnicode=true&characterEncoding=utf8&useSSL=false
     username: root
     password: guo@dong
     driverClassName: com.mysql.jdbc.Driver
